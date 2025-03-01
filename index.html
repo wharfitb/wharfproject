@@ -1,0 +1,630 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: 'Lexend', sans-serif;
+        box-sizing: border-box;
+    }
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: hidden;
+        /* Hindari scroll horizontal */
+    }
+
+    .sidebar {
+        background-color: #3c7e9b;
+        width: 300px;
+        height: 100vh;
+        position: fixed;
+        /* transform: translateX(-100%); */
+        left: -300px;
+        transition: 0.3s ease-in-out;
+        z-index: 1101;
+    }
+
+    .sidebar.active {
+        /* transform: translateX(0px); */
+        left: 0;
+    }
+
+    .sidebar .head {
+        background-color: #005481;
+        color: aliceblue;
+        padding: 20.7px;
+        text-align: right;
+    }
+
+    .sidebar .head .i {
+        font-weight: 900;
+        font-size: 30px;
+    }
+
+    .sidebar .head i:hover {
+        cursor: pointer;
+    }
+
+    .sidebar .body a {
+        text-decoration: none;
+        display: block;
+        padding: 10px;
+        color: white;
+        /* Warna teks tetap solid */
+        /* Warna putih dengan transparansi 50% */
+        border-radius: 5px;
+        /* Tambahkan jika ingin sudut membulat */
+    }
+
+
+    .sidebar .body a:hover {
+        color: #002060;
+        background-color: rgba(233, 228, 228, 0.5);
+    }
+
+
+    .content-wrapper {
+        transition: margin-left 0.3s ease-in-out;
+        overflow-y: scroll;
+        /* Tambahkan scroll pada content-wrapper */
+        height: 100vh;
+        padding-top: 100px;
+        /* Sesuaikan dengan header atau navbar */
+        /* Pastikan tinggi penuh */
+        scroll-snap-type: y mandatory;
+        /* padding: 20px;
+        background-color: #459EDB; */
+    }
+
+    .content-wrapper.shift {
+        margin-left: 300px;
+        /* Sama dengan lebar sidebar */
+    }
+
+    .main {
+        position: relative;
+        height: 100vh;
+        transition: 0.3s ease-in-out;
+        margin-left: 0px;
+        padding: 20px;
+        max-width: 100vw;
+        overflow-x: hidden;
+        scroll-snap-align: start;
+    }
+
+    .main::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background:
+            linear-gradient(180deg, rgba(139, 220, 236, 0.2), rgba(0, 119, 182, 0)),
+            url('images/home/image.png');
+        filter: brightness(90%);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        z-index: -1;
+    }
+
+
+    .main.inactive {
+        background-color: rgba(0, 0, 0, 0);
+    }
+
+
+    .navbar {
+        background-color: #0077B6;
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 1050;
+        /* Membuat elemen di kiri dan kanan */
+    }
+
+    .navbar-left {
+        display: flex;
+        align-items: center;
+    }
+
+    .navbar-left span {
+        color: white;
+        font-size: 18px;
+        margin-right: 10px;
+        /* Jarak antara EXPLORE dan ikon */
+    }
+
+    .navbar-left i {
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .navbar-profile {
+        /* height: 35px;
+        width: 35px; */
+        height: 30px;
+        margin-right: -10px;
+        object-fit: cover;
+        /* Menyesuaikan gambar agar tidak terdistorsi */
+    }
+
+    .main h1 {
+        text-align: center;
+        margin-top: 40px !important;
+    }
+
+
+    .main p {
+        margin-top: 20px;
+    }
+
+    .text-container {
+        position: absolute;
+        top: 40%;
+        left: 10%;
+        transform: translateY(-50%);
+        text-align: left;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        /* Rata kiri */
+    }
+
+    /* Gaya teks utama */
+    .independent-text {
+        font-size: 65px;
+        font-weight: bold;
+        /* color: white; */
+        color: #002060;
+        margin-bottom: 20px;
+        /* Jarak lebih dekat ke secondary-text */
+    }
+
+    /* Gaya teks kedua */
+    .secondary-text {
+        font-size: 30px;
+        font-weight: 900;
+        color: #002060;
+        /* color: #FFFF; */
+        margin-bottom: 10px;
+    }
+
+    .custom-box {
+        width: fit-content;
+        max-width: 600px;
+        /* Batasi lebar agar tetap proporsional */
+        background: linear-gradient(to bottom, #FFF7D6, #459EDB);
+        border-radius: 20px;
+        /* Sudut lengkung */
+        padding: 20px;
+        text-align: center;
+        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+        font-family: Arial, sans-serif;
+        margin-top: 35px;
+        border: 3px solid #0077B6;
+    }
+
+    .Software-development {
+        position: absolute;
+        width: fit-content;
+        max-width: 600px;
+        text-align: center;
+        color: white;
+        line-height: 1.5px;
+        font-size: 18px;
+        /* position: fixed; */
+        /* atau absolute */
+        bottom: 80px;  /* Naik ke atas */
+        right: 5px;   /* Bergeser ke kiri */
+        z-index: 15;
+        margin: 20px;
+        /* Opsional, untuk memberi jarak dari tepi */
+    }
+
+
+    .title {
+        background: #FFF7D6;
+        padding: 10px 15px;
+        border-radius: 15px 15px 0 0;
+        font-size: 22px;
+        font-weight: bold;
+        color: #002060;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .title i {
+        color: #E74C3C;
+        /* Warna panah merah */
+    }
+
+    .custom-box p {
+        color: #002060;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 10px;
+    }
+
+
+    .btn-custom {
+        background: #FF7D29;
+        color: white;
+        font-weight: bold;
+        padding: 10px 15px;
+        border-radius: 10px;
+        text-decoration: none;
+    }
+
+    .btn-custom:hover {
+        background: #d35400;
+        color: white;
+    }
+
+
+    .section-intro {
+        background-color: #e3f2fd;
+        /* Biru muda */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        padding: 50px;
+        text-align: center;
+        background:
+            linear-gradient(180deg, rgba(139, 220, 236, 0.7), rgba(0, 119, 182, 0.7)),
+            url('images/home/image.png');
+        filter: brightness(90%);
+        background-size: cover;
+        /* Menyesuaikan gambar dengan ukuran layar */
+        background-position: center;
+        /* Posisikan gambar di tengah */
+        background-repeat: no-repeat;
+        /* Agar tidak mengulang */
+        z-index: -1;
+        scroll-snap-align: start;
+    }
+
+    .section-intro h1 {
+        /* position: absolute; */
+        top: 40%;
+        margin-top: 75px;
+        margin-left: 80px;
+        /* transform: translateY(-50%); */
+        text-align: left;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        font-size: 65px;
+        font-weight: bold;
+        /* color: white; */
+        /* color: #002060; */
+        margin-bottom: 20px;
+        color: #002060;
+    }
+
+    .section-intro p {
+        margin: 10px 80px;
+        /* Atur jarak atas & bawah 10px, kiri & kanan 80px */
+        line-height: 1.5;
+        /* Sesuaikan agar teks lebih nyaman dibaca */
+        text-align: justify;
+        /* font-weight: bold; */
+        color: #ffff;
+        font-size: 20px;
+    }
+
+    .section-research {
+        background-color: #e3f2fd;
+        /* Biru muda */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        padding: 50px;
+        text-align: center;
+        background:
+            linear-gradient(180deg, rgba(139, 220, 236, 0.7), rgba(0, 119, 182, 0.7)),
+            url('images/home/image.png');
+        filter: brightness(90%);
+        background-size: cover;
+        /* Menyesuaikan gambar dengan ukuran layar */
+        background-position: center;
+        /* Posisikan gambar di tengah */
+        background-repeat: no-repeat;
+        /* Agar tidak mengulang */
+        z-index: -1;
+        scroll-snap-align: start;
+    }
+
+    .section-research h1 {
+        top: 40%;
+        margin-top: 75px;
+        margin-left: 80px;
+        text-align: left;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        font-size: 65px;
+        font-weight: bold;
+        /* color: white; */
+        /* color: #002060; */
+        margin-bottom: 20px;
+        color: #002060;
+    }
+
+    .section-research p {
+        margin: 10px 80px;
+        /* Atur jarak atas & bawah 10px, kiri & kanan 80px */
+        line-height: 1.5;
+        /* Sesuaikan agar teks lebih nyaman dibaca */
+        text-align: justify;
+        /* font-weight: bold; */
+        color: #ffff;
+        font-size: 20px;
+    }
+
+    .section-research .maps {
+        background: #03045E;
+        padding: 10px 15px;
+        border-radius: 15px 15px 15px 15px;
+        font-size: 22px;
+        text-align: center;
+        font-weight: bold;
+        margin-top: 30px;
+        width: 20%;
+    }
+
+
+
+    .section-info {
+        background-color: #e3f2fd;
+        /* Biru muda */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        padding: 50px;
+        text-align: center;
+        background:
+            linear-gradient(180deg, rgba(139, 220, 236, 0.7), rgba(0, 119, 182, 0.7)),
+            url('images/home/image.png');
+        filter: brightness(90%);
+        background-size: cover;
+        /* Menyesuaikan gambar dengan ukuran layar */
+        background-position: center;
+        /* Posisikan gambar di tengah */
+        background-repeat: no-repeat;
+        /* Agar tidak mengulang */
+        z-index: -1;
+        scroll-snap-align: start;
+    }
+
+    .section-info h1 {
+        margin-top: 75px;
+        margin-left: 80px;
+        font-size: 50px;
+        font-weight: bold;
+        color: #001f4d;
+        letter-spacing: 2px;
+    }
+
+    /* Deskripsi dengan efek blur */
+    .description {
+        font-size: 18px;
+        /* font-weight: bold; */
+        color: white;
+        text-align: justify;
+        line-height: 150%;
+        margin: 20px auto;
+        width: 70%;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+        border-radius: 10px;
+        font-size: 20px;
+    }
+
+    /* Gaya untuk list misi */
+    .missions {
+        list-style: none;
+        padding: 0;
+        width: 70%;
+        margin: auto;
+    }
+
+    .missions li {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        color: white;
+        background: #001f4d;
+        padding: 15px;
+        border-radius: 30px;
+        font-size: 20px;
+        /* font-weight: bold; */
+    }
+
+    /* Nomor di dalam lingkaran */
+    .missions li span {
+        background: white;
+        color: #001f4d;
+        font-size: 20px;
+        /* font-weight: bold; */
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        margin-right: 15px;
+    }
+
+    /* Link informasi */
+    .info {
+        background: #001f4d;
+        padding: 8px 15px;
+        border-radius: 5px;
+        /* font-weight: bold; */
+        display: inline-block;
+        color: white;
+        text-decoration: none;
+        margin-top: 20px;
+    }
+
+    .info:hover {
+        background: #003366;
+    }
+</style>
+
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="head"><span style="font-weight: bold;">EXPLORE</span>
+            <i onclick="closeSidebar()" class="bi bi-x"></i>
+        </div>
+        <div class="body">
+            <a href=""><span style="font-weight: bold;">HOME</span></a>
+            <a href="#section-intro"><span style="font-weight: bold;">ABOUT</span></a>
+            <a href="#section-research"><span style="font-weight: bold;">TRIUMPH PROJECT</span></a>
+            <a href="#section-info"><span style="font-weight: bold;">HYDROGRAPHY ITB</span></a>
+        </div>
+    </div>
+
+    <div class="navbar  navbar-expand-lg navbar-dark sticky-top">
+        <div class="navbar-left">
+            <span style="font-weight: bold; color: white;">EXPLORE</span>
+            <i onclick="openSidebar()" class="bi bi-list"></i>
+        </div>
+        <img src="images/home/TRIUMPH.png" alt="Profile" class="navbar-profile">
+    </div>
+
+    <div class="content-wrapper" id="content">
+        <div class=" main" id="main">
+            <div class="text-container">
+                <!-- Teks Utama -->
+                <h1 class="independent-text">WHARF</h1>
+                <!-- Teks Sekunder -->
+                <h2 class="secondary-text">WebGIS for Hydrographic Research Framework</h2>
+                <!-- Info Box -->
+                <div class="custom-box">
+                    <div class="title">
+                        <a href="https://wharfitb.github.io/wharfmaps/" class="maps" target="_blank"
+                            rel="noopener noreferrer" style="color: inherit; text-decoration: none;">
+                            <span class="bold">TRIUMPH</span> <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
+
+                    </div>
+                    <p>
+                        Tsunamigenic Landslide and Structural Modelling of the Nieuwerkerk Seamount: Potential and
+                        Hypothesis
+                    </p>
+                </div>
+            </div>
+            <div class="Software-development">
+                <p>
+                    <span style="background-color: #03045E; border-radius: 8px; padding: 5px 10px; color: white;">
+                        WebGIS is developed by Mentari and Aldi (2025)
+                    </span>
+                </p>
+            </div>
+            
+        </div>
+        <div class="section section-intro" id="section-intro">
+            <h1>WHARF</h1>
+            <p>The WebGIS for Hydrographic Research Framework (WHARF) is developed as a platform to visualize <span
+                    style="background-color: #03045E;">multibeam
+                    bathymetric data</span>
+                used by the Hydrography Research Group of ITB for their research projects, such as:
+            </p>
+            <img src="images/about/Subsurface Modelling.png" alt="Subsurface">
+            <p>WHARF is dedicated solely for visualization purposes as data sets are courtesy of multiple
+                projects involving a range of national and international institutions. Request to data sets can
+                be addressed formally to <span style="background-color: #002060;">hydrography@itb.ac.id</span>
+            </p>
+        </div>
+
+        <div class="section section-research" id="section-research">
+            <h1>TRIUMPH</h1>
+            <p>The Tsunamigenic Landslide and Structural Modelling of the Nieuwerkerk Seamount: Potential and Hypothesis
+                (TRIUMPH)
+                Project aims to describe the morphology of the seamount to further conduct landslide-induced tsunami
+                modelling in the vicinity of the Ina Lao (formerly Nieuwerkerk) seamount.
+            </p>
+            <p class="maps"><a href="https://wharfitb.github.io/wharfmaps/" class="maps" target="_blank"
+                    rel="noopener noreferrer" style="color: inherit; text-decoration: none;">TRIUMPH WebGIS</a></p>
+        </div>
+
+        <div class="section section-info" id="section-info">
+
+            <h1>HYDROGRAPHY ITB</h1>
+            <p class="description">
+                Hydrography Research Group is part of the Faculty of Earth Sciences and Technology,
+                Institut Teknologi Bandung (ITB) with the missions of:
+            </p>
+
+            <ul class="missions">
+                <li><span>1</span> Fostering action and multidisciplinary research,</li>
+                <li><span>2</span> Engaging with the coastal and small islands community,</li>
+                <li><span>3</span> Contribution to standard practices in the industry, and</li>
+                <li><span>4</span> Advancing world-class education.</li>
+            </ul>
+
+            <p><span style="color: white; font-size: 20px; line-height: 1.5px; text-align: justify;">Further information
+                    are available through our website</span>
+                <a href="https://hidrografi.gd.itb.ac.id" class="info">hidrografi.gd.itb.ac.id</a>
+            </p>
+        </div>
+    </div>
+
+
+
+
+    <script>
+        var sidebar = document.getElementById('sidebar');
+        // var main = document.getElementById('main');
+        var content = document.getElementById('content');
+
+        function openSidebar() {
+            sidebar.classList.add('active');
+            main.classList.add('shift');    // Main tetap bergeser
+            content.classList.add('shift'); // Semua section ikut bergeser
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('active');
+            // main.classList.remove('shift');    // Main kembali ke posisi awal
+            content.classList.remove('shift'); // Semua section kembali ke posisi awal
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>
